@@ -112,6 +112,15 @@ ipch/
 *.VC.db
 *.VC.VC.opendb
 
+.vs/
+*.sln
+x64
+*.slnx
+*.vcxproj
+*.vcxproj.filters
+*.vcxproj.user
+
+
 # Visual Studio profiler
 *.psess
 *.vsp
