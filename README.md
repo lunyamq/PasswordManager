@@ -6,13 +6,11 @@
 - **CMake** 3.16
 
 ### Установить инструменты
-1. **Visual Studio**
+1. **Visual Studio** https://visualstudio.microsoft.com/
 2. **OpenSSL** https://slproweb.com/products/Win32OpenSSL.html
-
 3. **CMake** https://cmake.org/download/
 
 ## Сборка проекта
-
 ```bat
 git clone https://github.com/lunyamq/PasswordManager.git
 cd PasswordManager/Crypt
