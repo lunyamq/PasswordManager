@@ -11,7 +11,7 @@
             AES_256,
             AES_128,
             CHACHA20,
-            BLOWFISH
+            SALSA20
         };
 
         class Cipher {

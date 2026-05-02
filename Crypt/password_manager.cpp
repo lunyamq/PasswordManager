@@ -80,7 +80,7 @@ std::string PasswordManager::get_cipher_name() const {
 void PasswordManager::run_benchmarks() {
     std::cout << "\n=== Encryption Algorithms Benchmark ===\n\n";
 
-    const size_t test_size = 1024 * 1024; // 1MB
+    const size_t test_size = 1024 * 1024; // 1 MB
     auto test_data = Random::generate_bytes(test_size);
 
     struct BenchmarkResult {
@@ -91,51 +91,79 @@ void PasswordManager::run_benchmarks() {
 
     std::map<CipherType, BenchmarkResult> results;
 
-    for (auto type : { CipherType::AES_128, CipherType::AES_256, CipherType::CHACHA20, CipherType::BLOWFISH }) {
+    // Перебираем алгоритмы
+    for (auto type : { CipherType::AES_128, CipherType::AES_256, CipherType::CHACHA20, CipherType::SALSA20 }) {
 
         std::cout << "Testing " << cipher_type_to_string(type) << "...\n";
 
-        PasswordManager pm;
-        if (!pm.select_cipher(type)) {
-            std::cout << "  Skipped (initialization error)\n\n";
+        // --- Сначала проверяем работоспособность (шифрование/расшифрование маленького блока) ---
+        PasswordManager pm_test;
+        if (!pm_test.select_cipher(type)) {
+            std::cout << "  Skipped (cipher creation error)\n\n";
             continue;
         }
 
-        auto key = Random::generate_bytes(pm.get_key_size());
-        auto iv = Random::generate_bytes(pm.get_iv_size());
+        auto key = Random::generate_bytes(pm_test.get_key_size());
+        auto iv = Random::generate_bytes(pm_test.get_iv_size());
 
-        if (!pm.set_key_and_iv(key, iv)) {
+        if (!pm_test.set_key_and_iv(key, iv)) {
             std::cout << "  Skipped (key/IV error)\n\n";
             continue;
         }
 
-        Benchmark bench;
-        BenchmarkResult result;
-
         std::string test_str = "Test123";
         auto test_bytes = string_to_bytes(test_str);
-        auto encrypted = pm.encrypt(test_bytes.data(), test_bytes.size());
-        auto decrypted = pm.decrypt(encrypted.data(), encrypted.size());
-        result.works = (test_bytes == decrypted);
+        auto encrypted_test = pm_test.encrypt(test_bytes.data(), test_bytes.size());
 
+        // Для расшифрования создаём НОВЫЙ менеджер, чтобы избежать проблем с состоянием
+        PasswordManager pm_test_dec;
+        pm_test_dec.select_cipher(type);
+        pm_test_dec.set_key_and_iv(key, iv);
+        auto decrypted_test = pm_test_dec.decrypt(encrypted_test.data(), encrypted_test.size());
+
+        bool works = (test_bytes == decrypted_test);
+        if (!works) {
+            std::cout << "  Functionality test FAILED, skipping benchmark\n\n";
+            results[type] = { 0.0, 0.0, false };
+            continue;
+        }
+
+        // --- Измерение производительности шифрования (отдельный менеджер) ---
+        PasswordManager pm_enc;
+        pm_enc.select_cipher(type);
+        pm_enc.set_key_and_iv(key, iv);
+
+        Benchmark bench;
         bench.start();
-        encrypted = pm.encrypt(test_data.data(), test_size);
+        auto encrypted_data = pm_enc.encrypt(test_data.data(), test_size);
         double encrypt_time = bench.stop();
-        result.encrypt_mbps = Benchmark::measure_throughput(test_size, encrypt_time);
+        double encrypt_mbps = Benchmark::measure_throughput(test_size, encrypt_time);
+
+        // --- Измерение производительности расшифрования (ещё один менеджер) ---
+        PasswordManager pm_dec;
+        pm_dec.select_cipher(type);
+        pm_dec.set_key_and_iv(key, iv);
 
         bench.start();
-        decrypted = pm.decrypt(encrypted.data(), encrypted.size());
+        auto decrypted_data = pm_dec.decrypt(encrypted_data.data(), encrypted_data.size());
         double decrypt_time = bench.stop();
-        result.decrypt_mbps = Benchmark::measure_throughput(test_size, decrypt_time);
+        double decrypt_mbps = Benchmark::measure_throughput(test_size, decrypt_time);
 
-        results[type] = result;
+        // Дополнительная проверка: расшифрованные данные должны совпадать с исходными
+        bool data_ok = (test_data == decrypted_data);
+        if (!data_ok) {
+            std::cout << "  WARNING: Decrypted 1MB data does not match original!\n";
+        }
+
+        results[type] = { encrypt_mbps, decrypt_mbps, works && data_ok };
 
         std::cout << std::fixed << std::setprecision(2);
-        std::cout << "  Encryption: " << result.encrypt_mbps << " MB/s\n";
-        std::cout << "  Decryption: " << result.decrypt_mbps << " MB/s\n";
-        std::cout << "  Works: " << (result.works ? "YES" : "NO") << "\n\n";
+        std::cout << "  Encryption: " << encrypt_mbps << " MB/s\n";
+        std::cout << "  Decryption: " << decrypt_mbps << " MB/s\n";
+        std::cout << "  Works: " << (works ? "YES" : "NO") << "\n\n";
     }
 
+    // --- Вывод сводной таблицы ---
     std::cout << "=== Performance Summary ===\n";
     std::cout << std::left << std::setw(12) << "Algorithm"
         << std::setw(18) << "Encrypt (MB/s)"

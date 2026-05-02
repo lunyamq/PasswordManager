@@ -11,7 +11,7 @@ void test_algorithm() {
     std::cout << "1. AES-256\n";
     std::cout << "2. AES-128\n";
     std::cout << "3. ChaCha20\n";
-    std::cout << "4. Blowfish\n";  
+    std::cout << "4. Salsa20\n";  
     std::cout << "Choice: ";
 
     int choice;
@@ -23,7 +23,7 @@ void test_algorithm() {
     case 1: type = CipherType::AES_256; break;
     case 2: type = CipherType::AES_128; break;
     case 3: type = CipherType::CHACHA20; break;
-    case 4: type = CipherType::BLOWFISH; break; 
+    case 4: type = CipherType::SALSA20; break; 
     default:
         std::cout << "Invalid choice\n";
         return;

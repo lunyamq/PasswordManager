@@ -5,6 +5,7 @@
 ChaCha20::ChaCha20() : keystream_pos(BLOCK_SIZE) {
     state.fill(0);
     keystream.fill(0);
+    initial_state.fill(0);
 }
 
 uint32_t ChaCha20::rotate_left(uint32_t x, int n) {
@@ -71,12 +72,9 @@ bool ChaCha20::init(const uint8_t* key, size_t key_len, const uint8_t* iv, size_
 
 
 void ChaCha20::encrypt(const uint8_t* plaintext, uint8_t* ciphertext, size_t length) {
-    state = initial_state;
-    keystream_pos = BLOCK_SIZE;
-
     for (size_t i = 0; i < length; i++) {
         if (keystream_pos >= BLOCK_SIZE) {
-            generate_keystream_block();
+            generate_keystream_block();   // использует текущий state и увеличивает счётчик
         }
         ciphertext[i] = plaintext[i] ^ keystream[keystream_pos++];
     }
