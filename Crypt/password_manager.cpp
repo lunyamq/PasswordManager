@@ -19,7 +19,6 @@ bool PasswordManager::select_cipher(CipherType type) {
         return false;
     }
 
-    std::cout << "Selected: " << cipher->get_name() << "\n";
     return true;
 }
 

@@ -22,10 +22,10 @@ struct AESImpl::Impl {
 
         switch (cipher_type) {
         case CipherType::AES_128:
-            cipher = EVP_aes_128_ctr();
+            cipher = EVP_aes_128_gcm();
             break;
         case CipherType::AES_256:
-            cipher = EVP_aes_256_ctr();
+            cipher = EVP_aes_256_gcm();
             break;
         default:
             throw std::runtime_error("Unsupported AES type");

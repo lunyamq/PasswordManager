@@ -26,12 +26,15 @@ endif()
 # ------------------------------------------------------------
 add_executable(Crypt
     main.cpp
+    cli.cpp
+    test_algorithm.cpp
     aes_openssl.cpp
     chacha20.cpp
     salsa20.cpp
-    cipher_factory.cpp
     password_manager.cpp
+    cipher_factory.cpp
     utils.cpp
+    vault_storage.cpp
 )
 
 target_include_directories(Crypt PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})

@@ -104,7 +104,7 @@ bool VaultStorage::write_to_file(const std::vector<uint8_t>& ciphertext) {
     std::ofstream ofs(filename_, std::ios::binary);
     if (!ofs) return false;
 
-    uint32_t magic = 0x01505700; // "PW\1" в little-endian
+    uint32_t magic = MAGIC; // "PW\1" в little-endian
     ofs.write(reinterpret_cast<const char*>(&magic), 4);
 
     uint8_t algo_id = static_cast<uint8_t>(cipher_type_);
@@ -133,7 +133,7 @@ bool VaultStorage::read_from_file(std::vector<uint8_t>& ciphertext) {
 
     uint32_t magic;
     ifs.read(reinterpret_cast<char*>(&magic), 4);
-    if (magic != 0x01505700) return false;
+    if (magic != MAGIC) return false;
 
     uint8_t algo_id;
     ifs.read(reinterpret_cast<char*>(&algo_id), 1);
@@ -170,9 +170,9 @@ bool VaultStorage::create(const std::string& filename, const std::string& master
     crypto_ = std::make_unique<PasswordManager>();
     if (!crypto_->select_cipher(cipher_type)) return false;
 
-    salt_ = Random::generate_bytes(16);
+    salt_ = Random::generate_bytes(SALT_SIZE);
     iv_ = Random::generate_bytes(crypto_->get_iv_size());
-    iterations_ = 100000;
+    iterations_ = PBKDF2_ITERATIONS;
 
     std::vector<uint8_t> key;
     if (!derive_key(master_password, key)) return false;
@@ -231,6 +231,15 @@ bool VaultStorage::open(const std::string& filename, const std::string& master_p
 
 bool VaultStorage::save() {
     if (!is_open_ || !crypto_) return false;
+    // Создаём резервную копию
+    std::string backup_filename = filename_ + ".bak";
+    std::ifstream src(filename_, std::ios::binary);
+    if (src) {
+        std::ofstream dst(backup_filename, std::ios::binary);
+        dst << src.rdbuf();
+        src.close();
+        dst.close();
+    }
 
     std::ostringstream oss;
     for (const auto& e : entries_) {

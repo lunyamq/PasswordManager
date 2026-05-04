@@ -3,6 +3,7 @@
 
 #include "cipher_interface.h"
 #include "password_manager.h"
+#include "constants.h"
 #include <vector>
 #include <string>
 #include <memory>
