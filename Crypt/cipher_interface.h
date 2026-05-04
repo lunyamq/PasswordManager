@@ -34,7 +34,7 @@
 
         class AESImpl;
         class ChaCha20;
-        class Blowfish;
+        class Salsa20;
 
         std::unique_ptr<Cipher> create_cipher(CipherType type);
         std::string cipher_type_to_string(CipherType type);

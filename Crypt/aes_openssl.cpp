@@ -16,6 +16,7 @@ struct AESImpl::Impl {
         decrypt_ctx(nullptr),
         type(cipher_type) {
         // Инициализация OpenSSL
+        memset(iv, 0, sizeof(iv));
         OpenSSL_add_all_algorithms();
         ERR_load_crypto_strings();
 

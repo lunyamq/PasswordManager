@@ -18,8 +18,8 @@ cd PasswordManager/Crypt
 mkdir build
 cd build
 
-cmake ..
-cmake --build .
+cmake .. -DCMAKE_BUILD_TYPE=Release
+cmake --build . --config Release
 ```
 Готовый файл появится в директории `Debug`
 
