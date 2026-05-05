@@ -9,12 +9,16 @@ find_package(OpenSSL REQUIRED)
 # ------------------------------------------------------------
 # Оптимизации для Release сборки
 # ------------------------------------------------------------
-if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU" OR CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
-    # GCC или Clang
+if (CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang|AppleClang")
+    # GCC, Clang или AppleClang
     set(CMAKE_CXX_FLAGS_DEBUG "-O0 -g -DDEBUG")
-    set(CMAKE_CXX_FLAGS_RELEASE "-O3 -DNDEBUG -march=native")
+    if (APPLE)
+        # macOS: -march=native не поддерживается
+        set(CMAKE_CXX_FLAGS_RELEASE "-O3 -DNDEBUG")
+    else()
+        set(CMAKE_CXX_FLAGS_RELEASE "-O3 -DNDEBUG -march=native")
+    endif()
 elseif (MSVC)
-    # Visual Studio
     set(CMAKE_CXX_FLAGS_DEBUG "/Od /ZI /DDEBUG")
     set(CMAKE_CXX_FLAGS_RELEASE "/O2 /DNDEBUG")
 else()

@@ -6,34 +6,24 @@
 - **OpenSSL** (криптографическая библиотека)
 - **CMake** (система сборки)
 
-## Сборка на Windows (вручную)
-1. **Установите Visual Studio** (с поддержкой C++) – [скачать](https://visualstudio.microsoft.com/)
-2. **Установите CMake** – [скачать](https://cmake.org/download/)
-3. **Установите OpenSSL** – [скачать](https://slproweb.com/products/Win32OpenSSL.html)
-
-```cmd
-cd PasswordManager/Crypt
-mkdir build && cd build
-cmake .. -DCMAKE_BUILD_TYPE=Release
-cmake --build . --config Release
-.\Release\Crypt.exe
-```
-
-## Сборка на macOS (Homebrew)
-```bash
-brew install cmake openssl
-
-cd PasswordManager/Crypt
-mkdir build && cd build
-cmake .. -DCMAKE_BUILD_TYPE=Release -DOPENSSL_ROOT_DIR=$(brew --prefix openssl)
-cmake --build . --config Release
-./Crypt
-```
-
-## Сборка на Linux 
+## Linux 
 ```bash
 sudo apt install build-essential cmake libssl-dev
+```
 
+## macOS
+```bash
+brew install cmake openssl
+```
+
+## Windows
+1. **Visual Studio** (с поддержкой C++) – [скачать](https://visualstudio.microsoft.com/)
+2. **CMake** – [скачать](https://cmake.org/download/)
+3. **OpenSSL** – [скачать](https://slproweb.com/products/Win32OpenSSL.html)
+
+---
+
+```bash
 cd PasswordManager/Crypt
 mkdir build && cd build
 cmake .. -DCMAKE_BUILD_TYPE=Release
