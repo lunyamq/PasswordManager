@@ -11,7 +11,8 @@
             AES_256,
             AES_128,
             CHACHA20,
-            SALSA20
+            SALSA20,
+            TRIVIUM
         };
 
         class Cipher {

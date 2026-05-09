@@ -35,6 +35,7 @@ add_executable(Crypt
     aes_openssl.cpp
     chacha20.cpp
     salsa20.cpp
+    trivium.cpp
     password_manager.cpp
     cipher_factory.cpp
     utils.cpp

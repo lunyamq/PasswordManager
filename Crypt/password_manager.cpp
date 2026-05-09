@@ -91,7 +91,7 @@ void PasswordManager::run_benchmarks() {
     std::map<CipherType, BenchmarkResult> results;
 
     // Перебираем алгоритмы
-    for (auto type : { CipherType::AES_128, CipherType::AES_256, CipherType::CHACHA20, CipherType::SALSA20 }) {
+    for (auto type : { CipherType::AES_128, CipherType::AES_256, CipherType::CHACHA20, CipherType::SALSA20, CipherType::TRIVIUM }) {
 
         std::cout << "Testing " << cipher_type_to_string(type) << "...\n";
 

@@ -2,6 +2,7 @@
 #include "aes_openssl.h"
 #include "chacha20.h"
 #include "salsa20.h"
+#include "trivium.h"
 
 #include <memory>
 #include <iostream>
@@ -18,6 +19,9 @@ std::unique_ptr<Cipher> create_cipher(CipherType type) {
     case CipherType::SALSA20:
         return std::make_unique<Salsa20>();
 
+    case CipherType::TRIVIUM:
+        return std::make_unique<Trivium>();
+
     default:
         std::cerr << "Error: Unknown cipher type\n";
         return nullptr;
@@ -30,6 +34,7 @@ std::string cipher_type_to_string(CipherType type) {
     case CipherType::AES_128: return "AES-128";
     case CipherType::CHACHA20: return "ChaCha20";
     case CipherType::SALSA20: return "Salsa20"; 
+    case CipherType::TRIVIUM: return "Trivium";
     default: return "Unknown";
     }
 }
@@ -39,5 +44,6 @@ CipherType string_to_cipher_type(const std::string& str) {
     if (str == "AES-128" || str == "aes-128") return CipherType::AES_128;
     if (str == "ChaCha20" || str == "chacha20") return CipherType::CHACHA20;
     if (str == "Salsa20" || str == "salsa20") return CipherType::SALSA20;
+    if (str == "Trivium" || str == "trivium") return CipherType::TRIVIUM;
     return CipherType::AES_256;
 }
