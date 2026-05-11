@@ -17,6 +17,11 @@ brew install cmake openssl qt
 ```
 
 ## Windows
+```cmd
+.\vcpkg install cmake openssl qt
+```
+
+## Иструменты
 1. **Visual Studio** – [скачать](https://visualstudio.microsoft.com/)
 2. **CMake** – [скачать](https://cmake.org/download/)
 3. **OpenSSL** – [скачать](https://slproweb.com/products/Win32OpenSSL.html)
