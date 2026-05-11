@@ -13,11 +13,11 @@ public:
     AESImpl(CipherType cipher_type);
     ~AESImpl() override;
 
-    // Запрещаем копирование
+    // Р—Р°РїСЂРµС‰Р°РµРј РєРѕРїРёСЂРѕРІР°РЅРёРµ
     AESImpl(const AESImpl&) = delete;
     AESImpl& operator=(const AESImpl&) = delete;
 
-    // Разрешаем перемещение
+    // Р Р°Р·СЂРµС€Р°РµРј РїРµСЂРµРјРµС‰РµРЅРёРµ
     AESImpl(AESImpl&&) = default;
     AESImpl& operator=(AESImpl&&) = default;
 

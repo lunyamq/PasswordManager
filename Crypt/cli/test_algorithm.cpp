@@ -1,6 +1,6 @@
 #include "cli.h"
-#include "password_manager.h"
-#include "utils.h"
+#include "../core/password_manager.h"
+#include "../core/utils.h"
 #include <iostream>
 
 void test_algorithm() {

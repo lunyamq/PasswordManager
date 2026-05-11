@@ -1,5 +1,5 @@
 ﻿#include "cli.h"
-#include "password_manager.h"
+#include "../core/password_manager.h"
 #include <iostream>
 #include <limits>
 
@@ -22,7 +22,7 @@ static int getch_linux() {
 #define GETCH() getch_linux()
 #endif
 
-int main() {
+int main1() {
     std::cout << "=== Cryptographic Password Manager ===\n";
 
     while (true) {

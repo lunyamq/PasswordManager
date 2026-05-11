@@ -7,11 +7,11 @@
 
 class ChaCha20 : public Cipher {
 private:
-    static constexpr size_t KEY_SIZE = 32;     // 256 бит
-    static constexpr size_t IV_SIZE = 12;      // 96 бит
-    static constexpr size_t BLOCK_SIZE = 64;   // 512 бит
+    static constexpr size_t KEY_SIZE = 32;     // 256 Р±РёС‚
+    static constexpr size_t IV_SIZE = 12;      // 96 Р±РёС‚
+    static constexpr size_t BLOCK_SIZE = 64;   // 512 Р±РёС‚
 
-    std::array<uint32_t, 16> state;            // 16 слов по 32 бита
+    std::array<uint32_t, 16> state;            // 16 СЃР»РѕРІ РїРѕ 32 Р±РёС‚Р°
     std::array<uint8_t, 64> keystream;
     size_t keystream_pos;
     std::array<uint32_t, 16> initial_state;

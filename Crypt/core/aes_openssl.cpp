@@ -1,3 +1,4 @@
+// aes_openssl.cpp
 #include "aes_openssl.h"
 #include <openssl/evp.h>
 #include <openssl/err.h>
@@ -15,7 +16,7 @@ struct AESImpl::Impl {
     Impl(CipherType cipher_type) : encrypt_ctx(nullptr),
         decrypt_ctx(nullptr),
         type(cipher_type) {
-        // Инициализация OpenSSL
+        // РРЅРёС†РёР°Р»РёР·Р°С†РёСЏ OpenSSL
         memset(iv, 0, sizeof(iv));
         OpenSSL_add_all_algorithms();
         ERR_load_crypto_strings();
@@ -50,13 +51,13 @@ struct AESImpl::Impl {
 
 AESImpl::AESImpl(CipherType cipher_type): pimpl(std::make_unique<Impl>(cipher_type)) { }
 
-// Деструктор
+// Р”РµСЃС‚СЂСѓРєС‚РѕСЂ
 AESImpl::~AESImpl() = default;
 
 bool AESImpl::init(const uint8_t* key, size_t key_len, const uint8_t* iv_data, size_t iv_len) {
     if (!pimpl->encrypt_ctx || !pimpl->decrypt_ctx) return false;
 
-    // Сохраняем IV
+    // РЎРѕС…СЂР°РЅСЏРµРј IV
     std::memset(pimpl->iv, 0, sizeof(pimpl->iv));
     size_t copy_len = (iv_len < sizeof(pimpl->iv)) ? iv_len : sizeof(pimpl->iv);
     std::memcpy(pimpl->iv, iv_data, copy_len);

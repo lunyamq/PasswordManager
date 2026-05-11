@@ -1,7 +1,7 @@
 #ifndef CLI_H
 #define CLI_H
 
-#include "vault_storage.h"
+#include "../core/vault_storage.h"
 #include <string>
 
 // Скрытый ввод пароля (без эха)

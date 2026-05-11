@@ -4,6 +4,8 @@
 ## Get latest from https://github.com/github/gitignore/blob/master/VisualStudio.gitignore
 
 # User-specific files
+*.qtvscr
+*.pwm
 *.rsuser
 *.suo
 *.user
@@ -17,6 +19,7 @@
 mono_crash.*
 
 # Build results
+Crypt/build
 [Dd]ebug/
 [Dd]ebugPublic/
 [Rr]elease/

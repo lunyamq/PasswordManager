@@ -8,7 +8,7 @@
 std::vector<uint8_t> Random::generate_bytes(size_t count) {
     std::vector<uint8_t> result(count);
 
-    std::random_device rd;  // Источник энтропии
+    std::random_device rd;  // РСЃС‚РѕС‡РЅРёРє СЌРЅС‚СЂРѕРїРёРё
     std::mt19937 generator(rd());  // Mersenne Twister 19937
     std::uniform_int_distribution<int> dist(0, 255);
 

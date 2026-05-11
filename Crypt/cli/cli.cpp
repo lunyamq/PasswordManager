@@ -1,8 +1,8 @@
 #include "cli.h"
-#include "vault_storage.h"
-#include "password_manager.h"
-#include "utils.h"
-#include "constants.h"
+#include "../core/vault_storage.h"
+#include "../core/password_manager.h"
+#include "../core/utils.h"
+#include "../core/constants.h"
 #include <openssl/crypto.h>
 #include <iostream>
 #include <string>

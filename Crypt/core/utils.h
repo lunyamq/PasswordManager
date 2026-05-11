@@ -28,7 +28,7 @@ std::vector<uint8_t> string_to_bytes(const std::string& str);
 std::string bytes_to_string(const std::vector<uint8_t>& bytes);
 std::string bytes_to_hex(const std::vector<uint8_t>& bytes);
 
-// Функции для работы с 32-битными словами
+// Р¤СѓРЅРєС†РёРё РґР»СЏ СЂР°Р±РѕС‚С‹ СЃ 32-Р±РёС‚РЅС‹РјРё СЃР»РѕРІР°РјРё
 uint32_t load32_le(const uint8_t* p);
 void store32_le(uint8_t* p, uint32_t v);
 uint32_t rotate_left(uint32_t x, int n);
