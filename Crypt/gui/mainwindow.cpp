@@ -247,6 +247,8 @@ void MainWindow::onCreateVault()
 {
     QString fileName = QFileDialog::getSaveFileName(this, "Create Vault", "", "Vault Files (*.pwm)");
     if (fileName.isEmpty()) return;
+    if (!fileName.endsWith(".pwm", Qt::CaseInsensitive))
+        fileName += ".pwm";
     QString password = QInputDialog::getText(this, "Master Password", "Enter master password:", QLineEdit::Password);
     if (password.isEmpty()) return;
     QString confirm = QInputDialog::getText(this, "Confirm Password", "Confirm master password:", QLineEdit::Password);
@@ -256,7 +258,7 @@ void MainWindow::onCreateVault()
     }
     QStringList items = { "AES-256", "ChaCha20", "Salsa20" };
     bool ok;
-    QString algo = QInputDialog::getItem(this, "Cipher", "Select cipher:", items, 1, false, &ok);
+    QString algo = QInputDialog::getItem(this, "Cipher", "Select cipher:", items, 1, false, &ok, Qt::WindowFlags());
     if (!ok) return;
     CipherType type;
     if (algo == "AES-256") type = CipherType::AES_256;
@@ -276,8 +278,10 @@ void MainWindow::onCreateVault()
 
 void MainWindow::onOpenVault()
 {
-    QString fileName = QFileDialog::getOpenFileName(this, "Open Vault", "", "Vault Files (*.pwm)");
+    QString fileName = QFileDialog::getOpenFileName(this, "Open Vault", "", "Vault Files (*.pwm);;All Files (*)");
     if (fileName.isEmpty()) return;
+    if (!fileName.endsWith(".pwm", Qt::CaseInsensitive))
+        fileName += ".pwm";
     QString password = QInputDialog::getText(this, "Master Password", "Enter master password:", QLineEdit::Password);
     if (vault.open(fileName.toStdString(), password.toStdString())) {
         isOpen = true;

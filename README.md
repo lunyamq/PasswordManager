@@ -8,18 +8,19 @@
 
 ## Linux 
 ```bash
-sudo apt install build-essential cmake libssl-dev
+sudo apt install build-essential cmake libssl-dev qt6-base-dev
 ```
 
 ## macOS
 ```bash
-brew install cmake openssl
+brew install cmake openssl qt
 ```
 
 ## Windows
-1. **Visual Studio** (с поддержкой C++) – [скачать](https://visualstudio.microsoft.com/)
+1. **Visual Studio** – [скачать](https://visualstudio.microsoft.com/)
 2. **CMake** – [скачать](https://cmake.org/download/)
 3. **OpenSSL** – [скачать](https://slproweb.com/products/Win32OpenSSL.html)
+4. **Qt** – [скачать](https://www.qt.io/development/download)
 
 ---
 
@@ -28,7 +29,8 @@ cd PasswordManager/Crypt
 mkdir build && cd build
 cmake .. -DCMAKE_BUILD_TYPE=Release
 cmake --build . --config Release
-./Crypt
+./crypt-cli
+./crypt-gui
 ```
 
 ## Функционал
