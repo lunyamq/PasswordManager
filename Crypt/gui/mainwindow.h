@@ -7,6 +7,7 @@
 #include <QPushButton>
 #include <QLabel>
 #include <QFormLayout>
+#include <optional>
 #include "../core/vault_storage.h"
 
 class MainWindow : public QMainWindow
@@ -47,7 +48,7 @@ private:
     void updateEntryList(const std::string& filter = "");
     void showStatusMessage(const QString& msg);
     void clearDetailsPanel();
-    CipherType showCipherDialog();
+    std::optional<CipherType> showCipherDialog();
 };
 
 #endif // MAINWINDOW_H

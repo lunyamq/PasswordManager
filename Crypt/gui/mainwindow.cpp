@@ -1,5 +1,7 @@
 #include "mainwindow.h"
 #include "../core/utils.h"
+#include <optional>  
+#include <QListWidget>
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QInputDialog>
@@ -260,7 +262,13 @@ void MainWindow::onCreateVault()
         QMessageBox::critical(this, "Error", "Passwords do not match.");
         return;
     }
-    CipherType type = showCipherDialog();
+    
+    auto optType = showCipherDialog();
+    if (!optType.has_value()) {
+        QMessageBox::warning(this, "Warning", "Cipher selection cancelled.");
+        return;
+    }
+    CipherType type = optType.value();
 
     if (vault.create(fileName.toStdString(), password.toStdString(), type)) {
         isOpen = true;
@@ -428,32 +436,32 @@ void MainWindow::onEntrySelectionChanged()
 void MainWindow::onEntryDoubleClicked(const QModelIndex& index)
 {
     Q_UNUSED(index);
-    onEntrySelectionChanged(); // уже показывает детали, но можно сделать отдельное окно.
-    // Для удобства просто покажем детали в правой панели – они уже там.
+    onEntrySelectionChanged();
 }
 
-CipherType MainWindow::showCipherDialog()
+
+std::optional<CipherType> MainWindow::showCipherDialog()
 {
     QDialog dialog(this);
     dialog.setWindowTitle("Select Cipher");
     QVBoxLayout layout(&dialog);
     QLabel label("Choose encryption algorithm:");
-    QComboBox combo;
-    combo.addItems({ "AES-256", "ChaCha20", "Salsa20" });
+    QListWidget list;
+    list.addItems({ "AES-256", "ChaCha20", "Salsa20" });
+    list.setCurrentRow(1); // ChaCha20 по умолчанию
     QDialogButtonBox buttons(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
     layout.addWidget(&label);
-    layout.addWidget(&combo);
+    layout.addWidget(&list);
     layout.addWidget(&buttons);
-
     connect(&buttons, &QDialogButtonBox::accepted, &dialog, &QDialog::accept);
     connect(&buttons, &QDialogButtonBox::rejected, &dialog, &QDialog::reject);
+    connect(&list, &QListWidget::doubleClicked, &dialog, &QDialog::accept);
 
     if (dialog.exec() == QDialog::Accepted) {
-        QString selected = combo.currentText();
+        QString selected = list.currentItem()->text();
         if (selected == "AES-256") return CipherType::AES_256;
         if (selected == "ChaCha20") return CipherType::CHACHA20;
         return CipherType::SALSA20;
     }
-    
-    return CipherType::AES_256;
+    return std::nullopt;
 }
