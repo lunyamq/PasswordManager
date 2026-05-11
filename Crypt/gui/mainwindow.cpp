@@ -35,7 +35,12 @@ void MainWindow::createUI()
     // Глобальный стиль (тёмная тема)
     this->setStyleSheet(R"(
         QMainWindow { background-color: #1e1e2f; }
-        QWidget { background-color: #1e1e2f; color: #cdd6f4; font-family: 'Segoe UI', 'Roboto'; font-size: 13px; }
+        QWidget {
+            background-color: #1e1e2f;
+            color: #cdd6f4;
+            font-family: 'Roboto', 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif;
+            font-size: 13px;
+        }
         QTableWidget {
             background-color: #181825;
             alternate-background-color: #1e1e2f;
@@ -139,6 +144,8 @@ void MainWindow::createUI()
     rightLayout->addWidget(detailsHeading);
 
     QFormLayout* formLayout = new QFormLayout();
+    formLayout->setLabelAlignment(Qt::AlignLeft | Qt::AlignVCenter);
+    formLayout->setFormAlignment(Qt::AlignLeft | Qt::AlignTop);
     titleValue = new QLabel("-");
     titleValue->setWordWrap(true);
     titleValue->setTextInteractionFlags(Qt::TextSelectableByMouse);
