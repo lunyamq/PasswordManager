@@ -65,7 +65,6 @@ void MainWindow::createUI()
         QPushButton {
             background-color: #313244; color: #cdd6f4; border: none;
             border-radius: 8px; padding: 8px 16px; font-weight: bold;
-            transition: background-color 0.2s ease;
         }
         QPushButton:hover { background-color: #45475a; }
         QPushButton:pressed { background-color: #585b70; }
