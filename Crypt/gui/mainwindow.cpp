@@ -5,6 +5,7 @@
 #include <QInputDialog>
 #include <QStatusBar>
 #include <QHBoxLayout>
+#include <QComboBox>
 #include <QVBoxLayout>
 #include <QMenuBar>
 #include <QMenu>
@@ -12,6 +13,7 @@
 #include <QHeaderView>
 #include <QSplitter>
 #include <QStyle>
+#include <QIcon>
 #include <QFormLayout>
 
 MainWindow::MainWindow(QWidget* parent)
@@ -91,16 +93,14 @@ void MainWindow::createUI()
     leftLayout->setSpacing(12);
 
     // Поиск
-    QHBoxLayout* searchLayout = new QHBoxLayout();
-    QLabel* searchLabel = new QLabel("🔍");
     searchLineEdit = new QLineEdit();
     searchLineEdit->setPlaceholderText("Search by title...");
-    QAction* clearAction = new QAction("✖", searchLineEdit);
+    searchLineEdit->addAction(style()->standardIcon(QStyle::SP_FileDialogContentsView), QLineEdit::LeadingPosition);
+    QAction* clearAction = new QAction(searchLineEdit);
+    clearAction->setIcon(style()->standardIcon(QStyle::SP_TitleBarCloseButton));
     connect(clearAction, &QAction::triggered, searchLineEdit, &QLineEdit::clear);
     searchLineEdit->addAction(clearAction, QLineEdit::TrailingPosition);
-    searchLayout->addWidget(searchLabel);
-    searchLayout->addWidget(searchLineEdit);
-    leftLayout->addLayout(searchLayout);
+    leftLayout->addWidget(searchLineEdit);
 
     // Таблица записей
     entryTable = new QTableWidget();
@@ -115,10 +115,14 @@ void MainWindow::createUI()
 
     // Кнопки действий
     QHBoxLayout* buttonLayout = new QHBoxLayout();
-    addButton = new QPushButton("➕ Add");
-    editButton = new QPushButton("✏️ Edit");
-    deleteButton = new QPushButton("🗑️ Delete");
-    saveButton = new QPushButton("💾 Save");
+    addButton = new QPushButton("Add");
+    addButton->setIcon(style()->standardIcon(QStyle::SP_FileIcon));
+    editButton = new QPushButton("Edit");
+    editButton->setIcon(style()->standardIcon(QStyle::SP_FileDialogDetailedView));
+    deleteButton = new QPushButton("Delete");
+    deleteButton->setIcon(style()->standardIcon(QStyle::SP_TrashIcon));
+    saveButton = new QPushButton("Save");
+    saveButton->setIcon(style()->standardIcon(QStyle::SP_DialogSaveButton));
     buttonLayout->addWidget(addButton);
     buttonLayout->addWidget(editButton);
     buttonLayout->addWidget(deleteButton);
@@ -129,7 +133,7 @@ void MainWindow::createUI()
     // ----- Правая панель (детали) -----
     QWidget* rightPanel = new QWidget();
     QVBoxLayout* rightLayout = new QVBoxLayout(rightPanel);
-    QLabel* detailsHeading = new QLabel("📋 Entry Details");
+    QLabel* detailsHeading = new QLabel("Entry Details");
     detailsHeading->setProperty("heading", true);
     rightLayout->addWidget(detailsHeading);
 
@@ -256,14 +260,7 @@ void MainWindow::onCreateVault()
         QMessageBox::critical(this, "Error", "Passwords do not match.");
         return;
     }
-    QStringList items = { "AES-256", "ChaCha20", "Salsa20" };
-    bool ok;
-    QString algo = QInputDialog::getItem(this, "Cipher", "Select cipher:", items, 1, false, &ok, Qt::WindowFlags());
-    if (!ok) return;
-    CipherType type;
-    if (algo == "AES-256") type = CipherType::AES_256;
-    else if (algo == "ChaCha20") type = CipherType::CHACHA20;
-    else type = CipherType::SALSA20;
+    CipherType type = showCipherDialog();
 
     if (vault.create(fileName.toStdString(), password.toStdString(), type)) {
         isOpen = true;
@@ -433,4 +430,30 @@ void MainWindow::onEntryDoubleClicked(const QModelIndex& index)
     Q_UNUSED(index);
     onEntrySelectionChanged(); // уже показывает детали, но можно сделать отдельное окно.
     // Для удобства просто покажем детали в правой панели – они уже там.
+}
+
+CipherType MainWindow::showCipherDialog()
+{
+    QDialog dialog(this);
+    dialog.setWindowTitle("Select Cipher");
+    QVBoxLayout layout(&dialog);
+    QLabel label("Choose encryption algorithm:");
+    QComboBox combo;
+    combo.addItems({ "AES-256", "ChaCha20", "Salsa20" });
+    QDialogButtonBox buttons(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
+    layout.addWidget(&label);
+    layout.addWidget(&combo);
+    layout.addWidget(&buttons);
+
+    connect(&buttons, &QDialogButtonBox::accepted, &dialog, &QDialog::accept);
+    connect(&buttons, &QDialogButtonBox::rejected, &dialog, &QDialog::reject);
+
+    if (dialog.exec() == QDialog::Accepted) {
+        QString selected = combo.currentText();
+        if (selected == "AES-256") return CipherType::AES_256;
+        if (selected == "ChaCha20") return CipherType::CHACHA20;
+        return CipherType::SALSA20;
+    }
+    
+    return CipherType::AES_256;
 }

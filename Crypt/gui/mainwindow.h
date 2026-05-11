@@ -47,6 +47,7 @@ private:
     void updateEntryList(const std::string& filter = "");
     void showStatusMessage(const QString& msg);
     void clearDetailsPanel();
+    CipherType showCipherDialog();
 };
 
 #endif // MAINWINDOW_H
