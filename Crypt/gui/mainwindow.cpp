@@ -38,7 +38,7 @@ void MainWindow::createUI()
         QWidget {
             background-color: #1e1e2f;
             color: #cdd6f4;
-            font-family: 'Roboto', 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif;
+            font-family: sans-serif;
             font-size: 13px;
         }
         QTableWidget {
