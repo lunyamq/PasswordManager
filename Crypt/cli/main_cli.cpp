@@ -22,7 +22,7 @@ static int getch_linux() {
 #define GETCH() getch_linux()
 #endif
 
-int main1() {
+int main() {
     std::cout << "=== Cryptographic Password Manager ===\n";
 
     while (true) {
