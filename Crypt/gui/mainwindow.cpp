@@ -17,6 +17,7 @@
 #include <QStyle>
 #include <QIcon>
 #include <QFormLayout>
+#include <QDialogButtonBox>
 
 MainWindow::MainWindow(QWidget* parent)
     : QMainWindow(parent)
