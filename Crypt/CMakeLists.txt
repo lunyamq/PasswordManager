@@ -7,7 +7,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 find_package(OpenSSL REQUIRED)
 
 # ------------------------------------------------------------
-# Оптимизации для Release сборки (оставляем как было)
+# Оптимизации для Release сборки
 # ------------------------------------------------------------
 if (CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang|AppleClang")
     set(CMAKE_CXX_FLAGS_DEBUG "-O0 -g -DDEBUG")
@@ -57,10 +57,9 @@ target_link_libraries(crypt-cli PRIVATE crypt_core OpenSSL::SSL OpenSSL::Crypto)
 
 # ------------------------------------------------------------
 # Графическая версия (GUI) – требует Qt6
-# ------------------------------------------------------------cmake --build . --config Release
+# ------------------------------------------------------------
 find_package(Qt6 REQUIRED COMPONENTS Core Widgets)
 
-# Включаем автоматическую обработку Qt макросов
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 set(CMAKE_AUTOUIC ON)

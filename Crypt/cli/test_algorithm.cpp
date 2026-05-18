@@ -36,7 +36,7 @@ void test_algorithm() {
         return;
     }
 
-    // Случайные ключ и IV (как в реальном менеджере)
+    // Случайные ключ и IV
     auto key = Random::generate_bytes(pm.get_key_size());
     auto iv = Random::generate_bytes(pm.get_iv_size());
 
@@ -56,7 +56,7 @@ void test_algorithm() {
     auto plaintext = string_to_bytes(text);
     auto encrypted = pm.encrypt(plaintext.data(), plaintext.size());
 
-    // Для расшифрования создаём НОВЫЙ объект (чтобы ChaCha20/Salsa20 работали)
+    // Для расшифрования создаём НОВЫЙ объект
     PasswordManager pm2;
     if (!pm2.select_cipher(type)) {
         std::cout << "Failed to select cipher for decryption\n";

@@ -21,28 +21,21 @@ struct Entry {
     std::string updated;
 };
 
-// Класс для работы с зашифрованным хранилищем
 class VaultStorage {
 public:
     VaultStorage();
     ~VaultStorage();
 
-    // Создать новое хранилище (файл)
     bool create(const std::string& filename,
         const std::string& master_password,
         CipherType cipher_type);
 
-    // Открыть существующее хранилище (расшифровать и загрузить записи)
     bool open(const std::string& filename,
         const std::string& master_password);
 
-    // Сохранить текущие записи обратно в файл (перешифровать)
     bool save();
-
-    // Закрыть хранилище (очистить ключи и записи из памяти)
     void close();
 
-    // Работа с записями
     std::vector<Entry> get_all_entries() const;
     bool add_entry(const Entry& e);
     bool update_entry(const std::string& id, const Entry& e);
@@ -56,18 +49,17 @@ private:
     std::string filename_;
     CipherType cipher_type_;
     std::vector<Entry> entries_;
-    std::vector<uint8_t> salt_;            // соль для PBKDF2
-    std::vector<uint8_t> iv_;              // вектор инициализации
-    uint32_t iterations_ = 100000;         // число итераций KDF
+    std::vector<uint8_t> salt_;               // соль для PBKDF2
+    std::vector<uint8_t> iv_;                 // вектор инициализации
+    uint32_t iterations_ = 100000;            // число итераций KDF
     std::unique_ptr<PasswordManager> crypto_; // менеджер шифрования
-    std::vector<uint8_t> derived_key_;     // ключ, полученный из мастер-пароля
+    std::vector<uint8_t> derived_key_;        // ключ, полученный из мастер-пароля
 
     bool derive_key(const std::string& password, std::vector<uint8_t>& key);
     bool write_to_file(const std::vector<uint8_t>& ciphertext);
     bool read_from_file(std::vector<uint8_t>& ciphertext);
 };
 
-// Вспомогательные функции (реализованы в .cpp)
 std::string generate_uuid();
 std::string get_current_time();
 void print_entry(const Entry& e);
