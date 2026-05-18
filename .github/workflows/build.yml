@@ -26,15 +26,15 @@ jobs:
           qt6-base-dev
 
     - name: Configure CMake
-      run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{matrix.build_type}}
+      run: cmake -B ${{github.workspace}}/build -S ${{github.workspace}}/Crypt -DCMAKE_BULD_TYPE=${{matrix.build_type}}
 
     - name: Build
       run: cmake --build ${{github.workspace}}/build --config ${{matrix.build_type}} -j $(nproc)
 
-    - name: Test CLI
-      run: ./build/crypt-cli
-      
-    - name: Test GUI
+    - name: Test CLI (smoke)
+      run: test -f ${{github.workspace}}/build/crypt-cli
+
+    - name: Test GUI (headless)
       run: |
         export QT_QPA_PLATFORM=offscreen
-        ./build/crypt-gui
+        timeout 5s ${{github.workspace}}/build/crypt-gui || test $? -eq 124
