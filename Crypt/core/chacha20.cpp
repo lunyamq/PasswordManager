@@ -59,7 +59,7 @@ bool ChaCha20::init(const uint8_t* key, size_t key_len, const uint8_t* iv, size_
         state[4 + i] = load32_le(key + i * 4);
     }
 
-    state[12] = 0;
+    state[12] = 0; // counter
 
     state[13] = load32_le(iv + 0);
     state[14] = load32_le(iv + 4);
@@ -75,7 +75,7 @@ bool ChaCha20::init(const uint8_t* key, size_t key_len, const uint8_t* iv, size_
 void ChaCha20::encrypt(const uint8_t* plaintext, uint8_t* ciphertext, size_t length) {
     for (size_t i = 0; i < length; i++) {
         if (keystream_pos >= BLOCK_SIZE) {
-            generate_keystream_block();   // использует текущий state и увеличивает счётчик
+            generate_keystream_block();
         }
         ciphertext[i] = plaintext[i] ^ keystream[keystream_pos++];
     }

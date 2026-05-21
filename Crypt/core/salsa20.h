@@ -8,7 +8,7 @@
 class Salsa20 : public Cipher {
 public:
     static constexpr size_t KEY_SIZE = 32;     // 256 бит
-    static constexpr size_t IV_SIZE = 8;       // 64 бит (Salsa20 использует 8-байтовый nonce)
+    static constexpr size_t IV_SIZE = 8;       // 64 бит
     static constexpr size_t BLOCK_SIZE = 64;   // 64 байта на блок
 
     Salsa20();

@@ -1,3 +1,4 @@
+// salsa20.cpp
 #include "salsa20.h"
 #include "utils.h"
 #include <cstring>
@@ -22,7 +23,6 @@ void Salsa20::quarter_round(uint32_t& a, uint32_t& b, uint32_t& c, uint32_t& d) 
 void Salsa20::generate_keystream_block() {
     std::array<uint32_t, 16> x = state;
 
-    // 20 раундов (10 пар «столбец» + «строка»)
     for (int i = 0; i < 10; ++i) {
         // Quarter round столбцов
         quarter_round(x[0], x[4], x[8], x[12]);
@@ -41,16 +41,11 @@ void Salsa20::generate_keystream_block() {
     for (int i = 0; i < 16; ++i)
         x[i] += state[i];
 
-    // Упаковываем в keystream (little-endian)
+    // Упаковываем в keystream
     for (int i = 0; i < 16; ++i)
         store32_le(&keystream[i * 4], x[i]);
 
     keystream_pos = 0;
-    // Увеличиваем счётчик блока (в Salsa20 это поле state[8] или другое? 
-    // В стандарте Salsa20 счётчик находится в state[8] (для 64-битного nonce)
-    // В нашей реализации state[12] не используется, используем state[8] как младшую часть счётчика.
-    // Для простоты и единообразия с ChaCha20, я предлагаю увеличивать state[8] (счётчик блоков).
-    // При переполнении state[9] не обрабатывается (для больших объёмов не критично).
     state[8]++;
 }
 
@@ -58,27 +53,27 @@ bool Salsa20::init(const uint8_t* key, size_t key_len, const uint8_t* iv, size_t
     if (key_len != KEY_SIZE || iv_len != IV_SIZE)
         return false;
 
-    // Константы Salsa20 (little-endian)
-    state[0] = 0x61707865; // "expa"
-    state[1] = 0x3320646e; // "nd 3"
-    state[2] = 0x79622d32; // "2-by"
-    state[3] = 0x6b206574; // "te k"
+    // Константы Salsa20
+    state[0] = 0x61707865;
+    state[1] = 0x3320646e;
+    state[2] = 0x79622d32;
+    state[3] = 0x6b206574;
 
-    // Ключ (8 слов по 32 бита)
+    // Ключ
     for (int i = 0; i < 8; ++i)
         state[4 + i] = load32_le(key + i * 4);
 
-    // Nonce (2 слова, 64 бита)
+    // Nonce
     state[12] = load32_le(iv);
     state[13] = load32_le(iv + 4);
 
-    // Счётчик блока (64 бита): state[8] и state[9]
+    // Счётчик блока
     state[8] = 0;
     state[9] = 0;
-    state[10] = 0;   // не используется
-    state[11] = 0;   // не используется
-    state[14] = 0;   // не используется
-    state[15] = 0;   // не используется
+    state[10] = 0;   
+    state[11] = 0;   
+    state[14] = 0;   
+    state[15] = 0;   
 
     initial_state = state;
     keystream_pos = BLOCK_SIZE;
@@ -86,7 +81,6 @@ bool Salsa20::init(const uint8_t* key, size_t key_len, const uint8_t* iv, size_t
 }
 
 void Salsa20::encrypt(const uint8_t* plaintext, uint8_t* ciphertext, size_t length) {
-    // Сбрасываем состояние перед шифрованием (как в вашем исходном ChaCha20)
     state = initial_state;
     keystream_pos = BLOCK_SIZE;
 
@@ -98,5 +92,5 @@ void Salsa20::encrypt(const uint8_t* plaintext, uint8_t* ciphertext, size_t leng
 }
 
 void Salsa20::decrypt(const uint8_t* ciphertext, uint8_t* plaintext, size_t length) {
-    encrypt(ciphertext, plaintext, length); // симметрично
+    encrypt(ciphertext, plaintext, length);
 }

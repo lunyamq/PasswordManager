@@ -90,12 +90,9 @@ void PasswordManager::run_benchmarks() {
 
     std::map<CipherType, BenchmarkResult> results;
 
-    // Перебираем алгоритмы
     for (auto type : { CipherType::AES_128, CipherType::AES_256, CipherType::CHACHA20, CipherType::SALSA20, CipherType::TRIVIUM }) {
-
         std::cout << "Testing " << cipher_type_to_string(type) << "...\n";
 
-        // --- Сначала проверяем работоспособность (шифрование/расшифрование маленького блока) ---
         PasswordManager pm_test;
         if (!pm_test.select_cipher(type)) {
             std::cout << "  Skipped (cipher creation error)\n\n";
@@ -114,7 +111,6 @@ void PasswordManager::run_benchmarks() {
         auto test_bytes = string_to_bytes(test_str);
         auto encrypted_test = pm_test.encrypt(test_bytes.data(), test_bytes.size());
 
-        // Для расшифрования создаём НОВЫЙ менеджер, чтобы избежать проблем с состоянием
         PasswordManager pm_test_dec;
         pm_test_dec.select_cipher(type);
         pm_test_dec.set_key_and_iv(key, iv);
@@ -127,7 +123,6 @@ void PasswordManager::run_benchmarks() {
             continue;
         }
 
-        // --- Измерение производительности шифрования (отдельный менеджер) ---
         PasswordManager pm_enc;
         pm_enc.select_cipher(type);
         pm_enc.set_key_and_iv(key, iv);
@@ -138,7 +133,6 @@ void PasswordManager::run_benchmarks() {
         double encrypt_time = bench.stop();
         double encrypt_mbps = Benchmark::measure_throughput(test_size, encrypt_time);
 
-        // --- Измерение производительности расшифрования (ещё один менеджер) ---
         PasswordManager pm_dec;
         pm_dec.select_cipher(type);
         pm_dec.set_key_and_iv(key, iv);
@@ -148,7 +142,6 @@ void PasswordManager::run_benchmarks() {
         double decrypt_time = bench.stop();
         double decrypt_mbps = Benchmark::measure_throughput(test_size, decrypt_time);
 
-        // Дополнительная проверка: расшифрованные данные должны совпадать с исходными
         bool data_ok = (test_data == decrypted_data);
         if (!data_ok) {
             std::cout << "  WARNING: Decrypted 1MB data does not match original!\n";
@@ -162,7 +155,6 @@ void PasswordManager::run_benchmarks() {
         std::cout << "  Works: " << (works ? "YES" : "NO") << "\n\n";
     }
 
-    // --- Вывод сводной таблицы ---
     std::cout << "=== Performance Summary ===\n";
     std::cout << std::left << std::setw(12) << "Algorithm"
         << std::setw(18) << "Encrypt (MB/s)"

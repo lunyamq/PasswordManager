@@ -1,8 +1,8 @@
 #include "vault_storage.h"
-#include "password_manager.h"       // для PasswordManager
+#include "password_manager.h"       
 #include "utils.h"                  // для Random, string_to_bytes и пр.
 #include <openssl/evp.h>            // для PBKDF2
-#include <openssl/rand.h>           // для RAND_bytes (не используется напрямую, но Random::generate_bytes может его использовать)
+#include <openssl/rand.h>           // для RAND_bytes 
 #include <fstream>
 #include <sstream>
 #include <cstring>
@@ -12,9 +12,6 @@
 #include <algorithm>
 #include <iostream>
 
-// ----------------------------------------------------------------------
-// Сериализация записей в текст (формат: поле1|поле2|... с экранированием)
-// ----------------------------------------------------------------------
 static std::string escape(const std::string& s) {
     std::string result;
     for (char c : s) {
@@ -84,9 +81,7 @@ static Entry string_to_entry(const std::string& line) {
     return e;
 }
 
-// ----------------------------------------------------------------------
-// Реализация VaultStorage
-// ----------------------------------------------------------------------
+
 VaultStorage::VaultStorage() = default;
 VaultStorage::~VaultStorage() { close(); }
 
@@ -104,7 +99,7 @@ bool VaultStorage::write_to_file(const std::vector<uint8_t>& ciphertext) {
     std::ofstream ofs(filename_, std::ios::binary);
     if (!ofs) return false;
 
-    uint32_t magic = MAGIC; // "PW\1" в little-endian
+    uint32_t magic = MAGIC;
     ofs.write(reinterpret_cast<const char*>(&magic), 4);
 
     uint8_t algo_id = static_cast<uint8_t>(cipher_type_);
@@ -139,7 +134,6 @@ bool VaultStorage::read_from_file(std::vector<uint8_t>& ciphertext) {
     ifs.read(reinterpret_cast<char*>(&algo_id), 1);
     cipher_type_ = static_cast<CipherType>(algo_id);
 
-    // Создаём PasswordManager и выбираем шифр
     crypto_ = std::make_unique<PasswordManager>();
     if (!crypto_->select_cipher(cipher_type_)) return false;
 
@@ -301,9 +295,6 @@ Entry* VaultStorage::find_entry(const std::string& id) {
     return nullptr;
 }
 
-// ----------------------------------------------------------------------
-// Глобальные утилиты
-// ----------------------------------------------------------------------
 std::string generate_uuid() {
     auto bytes = Random::generate_bytes(16);
     std::stringstream ss;

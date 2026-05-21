@@ -94,7 +94,7 @@ void MainWindow::createUI()
     QHBoxLayout* mainLayout = new QHBoxLayout(central);
     mainLayout->setContentsMargins(8, 8, 8, 8);
 
-    // ----- Левая панель -----
+    
     QWidget* leftPanel = new QWidget();
     QVBoxLayout* leftLayout = new QVBoxLayout(leftPanel);
     leftLayout->setSpacing(12);
@@ -137,7 +137,7 @@ void MainWindow::createUI()
     buttonLayout->addWidget(saveButton);
     leftLayout->addLayout(buttonLayout);
 
-    // ----- Правая панель (детали) -----
+    
     QWidget* rightPanel = new QWidget();
     QVBoxLayout* rightLayout = new QVBoxLayout(rightPanel);
     QLabel* detailsHeading = new QLabel("Entry Details");

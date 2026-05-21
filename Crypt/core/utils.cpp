@@ -4,18 +4,14 @@
 #include <algorithm>
 #include <iostream>
 #include <random>
+#include <openssl/rand.h>
 
 std::vector<uint8_t> Random::generate_bytes(size_t count) {
     std::vector<uint8_t> result(count);
-
-    std::random_device rd;  // Источник энтропии
-    std::mt19937 generator(rd());  // Mersenne Twister 19937
-    std::uniform_int_distribution<int> dist(0, 255);
-
-    for (size_t i = 0; i < count; ++i) {
-        result[i] = static_cast<uint8_t>(dist(generator));
+    if (RAND_bytes(result.data(), static_cast<int>(count)) != 1) {
+        // Обработка ошибки: недостаточно энтропии
+        throw std::runtime_error("RAND_bytes failed");
     }
-
     return result;
 }
 

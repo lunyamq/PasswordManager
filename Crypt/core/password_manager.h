@@ -25,8 +25,6 @@ public:
     size_t get_iv_size() const;
     std::string get_cipher_name() const;
 
-    void test_algorithm(CipherType type);
-
     static void run_benchmarks();
 };
 
